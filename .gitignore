@@ -98,3 +98,8 @@ $RECYCLE.BIN/
 *.vcxproj*
 src/.vs/*
 .vs/*
+
+#Test files
+builds/lsheader.ini
+builds/*.java
+builds/*.class
