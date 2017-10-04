@@ -17,7 +17,6 @@ string version = "";
 string inputFile = "";
 string outputFile = "";
 string failReasons;
-string fileNameRAW;
 
 bool checkFileAccess(string i, string o) {
 	
@@ -117,6 +116,9 @@ bool checkMissingParameters() {
 int main(int argc, char*const argv[]) {
 	
 	string * documentCacheSpace = new string();
+	string originalClassName;
+	string outputClassName;
+	
 
 	readConfig(); // Read the config before running
 
@@ -130,27 +132,32 @@ int main(int argc, char*const argv[]) {
 		else if (containIgnoreCase(argv[i], "-pd", 1) || containIgnoreCase(argv[i], "--project-description")) { projectDescription = argv[i + 1]; ++i; }
 		else if (containIgnoreCase(argv[i], "-v", 1) || containIgnoreCase(argv[i], "--version")) { version = argv[i + 1]; ++i; }
 	}
-	if (checkMissingParameters())					 { printf("%s\nFailed to execute.\n", failReasons.c_str()); return 1; } //Check missing parameters
+	//=================================
+	//Check missing parameters
+	//=================================
+	if (checkMissingParameters())					 { printf("%s\nFailed to execute.\n", failReasons.c_str()); return 1; } 
+	
 	//=================================
 	//Process class name and file name
 	//=================================
 	if (outputFile == "") { // Make a neatly-formatted name for Mr. Patel's assignments
-		for (int i = 0; i < inputFile.find_last_of("."); ++i) {
-			fileNameRAW += inputFile[i];
-		}
+		for (int i = 0; i < inputFile.find_last_of("."); ++i) {outputClassName += inputFile[i];}
+		
 		for (char nameBuffer : name) {
-
 			if (nameBuffer == ' ') continue;
-			else fileNameRAW += toupper(nameBuffer);
-
+			else outputClassName += toupper(nameBuffer);
 		}
-		outputFile = fileNameRAW + ".java";
+
+		outputFile = outputClassName + ".java";
 	}
 	else {
-		for (int i = 0; i < outputFile.find_last_of("."); ++i) {
-			fileNameRAW += outputFile[i];
-		}
+		for (int i = 0; i < outputFile.find_last_of("."); ++i) {outputClassName += outputFile[i];}
 	}
+
+	//Find class name from the input file name
+	for (int i = 0; i < inputFile.find_last_of("."); ++i) {originalClassName += inputFile[i];}
+
+
 	//====================
 	//Check File Access
 	//====================
@@ -161,8 +168,6 @@ int main(int argc, char*const argv[]) {
 	if (version == "") version = "0.0.1";
 	if (date == "") date = getSystemDate();
 
-
-
 	reader.open(inputFile);
 
 
@@ -170,9 +175,9 @@ int main(int argc, char*const argv[]) {
 	// Cache File content
 	// =====================
 	while (getline(reader, readBuffer)) {
-		if (readBuffer.find("class") != string::npos) {
+		if (readBuffer.find(("class "+ originalClassName)) != string::npos) {
 			
-			*documentCacheSpace += "public class " + fileNameRAW;
+			*documentCacheSpace += "public class " + outputClassName;
 			if (readBuffer.find('{') != string::npos) *documentCacheSpace += " {";
 			*documentCacheSpace += "\n";
 
