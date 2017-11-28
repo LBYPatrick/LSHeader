@@ -1,19 +1,41 @@
 #pragma once
-#include "LSHeader.h"
-#include "util.h"
 
-string util::toUpperString(string str) {
+#pragma once
+#include<iostream>
+#include<fstream>
+#include<ctime>
+#include<string>
+
+using std::ifstream;
+using std::ofstream;
+using std::string;
+
+
+#include "Utils.h"
+
+string Utils::toUpperString(string str) {
 	for (std::string::iterator it = str.begin(); it != str.end(); ++it)
 		*it = (char)toupper(*it);
 	return str;
 }
 
-bool util::containIgnoreCase(string str, string key, bool strict) {
+bool inline Utils::containIgnoreCase(string str, string key, bool strict) {
 	if (strict) return toUpperString(str) == toUpperString(key);
 	if (!strict) return toUpperString(str).find(toUpperString(key)) != string::npos;
 }
 
-string util::getSystemDate() {
+string Utils::removeDotJava(string str) {
+	
+	string returnBuffer;
+	int endPosition = str.size() -1;
+	if (containIgnoreCase(str, ".java", 0)) - 5;
+	
+	for (int i = 0; i <= endPosition; ++i) returnBuffer += str[i];
+	return returnBuffer;
+
+}
+
+string Utils::getSystemDate() {
 	
 	string endResult;
 	time_t now = time(0);
@@ -55,3 +77,5 @@ string util::getSystemDate() {
 
 	return endResult;
 }
+
+bool Utils::checkParam(string ,string )
