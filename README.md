@@ -27,15 +27,15 @@ The configuration file is **NOT REQUIRED**, and you **don't even need** to speci
 
 And use the commandline, contents will be overwritten if you specify something that was existed in the config:
 ```bash
-		-i or --input				specify input file
-		-o or --output				specify output file
-		-a or --author				specify author ("Name")
-		-d or --date				specify date (optional)
-		-p or --period				specify period
-       -pt or --project-title		specify project Title
+		-i or --input               specify input file
+		-o or --output              specify output file
+		-a or --author              specify author ("Name")
+		-d or --date                specify date (optional)
+		-p or --period              specify period
+       -pt or --project-title       specify project Title
 	   -pd or --project-description specify project description
-	    -v or --version				specify version
-
+	    -v or --version             specify version
+		-H or --header-only         specify whether you just want to add the header (Not outputing to another file & Not changing the class name)
 ```
 
 ## Upcoming features
