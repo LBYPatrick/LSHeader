@@ -78,4 +78,7 @@ string Utils::getSystemDate() {
 	return endResult;
 }
 
-bool Utils::checkParam(string ,string )
+bool Utils::checkParam(string input,string abbr, string full) {
+	if (input == abbr || input == full) return true;
+	else return false;
+}

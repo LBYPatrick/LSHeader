@@ -12,4 +12,6 @@ struct ConfigContainer final {
 	string pDescription = "";
 	string version = "";
 	string originFileName;
+	string inputFile;
+	string outputFile;
 };
