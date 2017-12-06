@@ -119,7 +119,7 @@ int main(int argc, char*const argv[]) {
 	string			failReasons;
 	string			readBuffer;
 	string			rawClassName;
-	string			finalClassName;
+	string			originClassName;
 	string			lineBuffer;
 	bool			isEntryClassScanned = false;
 	
@@ -143,19 +143,19 @@ int main(int argc, char*const argv[]) {
 	
 	//Format outputFile name
 	if (config.outputFile == "") {
-		for (int i = 0; i <= config.inputFile.find_last_of(".java") - 5; ++i) { rawClassName += config.inputFile[i]; }
 		
-		finalClassName = rawClassName;
+		rawClassName = LSHeader::getClassName(config.inputFile);
+		originClassName  = rawClassName;
 
 		if (!headerOnly) {
-			for (char buffer : config.name) { if (buffer != ' ') finalClassName += toupper(buffer); } 
-			config.outputFile = finalClassName + ".java";
+			for (char buffer : config.name) { if (buffer != ' ') rawClassName += toupper(buffer); } 
+			config.outputFile = rawClassName + ".java";
 		}
 		else config.outputFile = config.inputFile;
 	}
 
 	//Generate Project Title if not found
-	config.pTitle = config.pTitle == "" ? rawClassName : config.pTitle;
+	config.pTitle = config.pTitle == "" ? originClassName : config.pTitle;
 
 	//Check File Access
 	if (checkFileAccess(config.inputFile, config.outputFile,failReasons)) { printf("%s\nFailed to execute.\n", failReasons.c_str()); return 1; }
@@ -166,12 +166,17 @@ int main(int argc, char*const argv[]) {
 	while (getline(reader, readBuffer)) {
 		
 		if (!isEntryClassScanned) { // Replace class name
-			if (readBuffer.find("public class " + rawClassName) != string::npos) {
-				for (int i = 0; i < readBuffer.find(rawClassName); ++i) lineBuffer += readBuffer[i];
-				lineBuffer += finalClassName;
-				for (int i = (rawClassName.find(rawClassName)) + rawClassName.size(); i < rawClassName.size(); ++i)
-					lineBuffer += readBuffer[i];
+			if (readBuffer.find("public class " + originClassName) != string::npos) {
+				
+				//Read everything before the class name
+				for (int i = 0; i < readBuffer.find(originClassName); ++i) lineBuffer += readBuffer[i];
+				lineBuffer += rawClassName;
 
+				//Read the remainder of the line
+				for (int i = (readBuffer.find(originClassName)) + originClassName.size(); i < readBuffer.size(); ++i)
+					lineBuffer += readBuffer[i];
+				
+				//Write the processed line to a temp string for outputing
 				rawFileContent += lineBuffer;
 				rawFileContent += "\n";
 				isEntryClassScanned = true;
